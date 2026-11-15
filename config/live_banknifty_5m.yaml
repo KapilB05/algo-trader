@@ -1,0 +1,45 @@
+# ==============================================================================
+#  Official BankNifty 5-Minute Futures Live/Paper Trading Configuration
+# ==============================================================================
+
+system:
+  name: "BankNifty 5M Dynamic ATR Ensemble"
+  environment: "paper"       # "paper" or "live"
+  timeframe: "5m"
+  log_level: "INFO"
+
+instrument:
+  symbol: "BANKNIFTY FUT"
+  exchange: "NFO"
+  symbol_token: "BANKNIFTY_FUT_TOKEN"
+  lot_size: 30
+  tick_size: 0.05
+
+labeling:
+  target_atr_mult: 2.5       # Target = entry + (2.5 * ATR)
+  stop_atr_mult: 1.0         # Stop = entry - (1.0 * ATR)
+  forward_window: 30         # 30 5-min candles (150 minutes max hold)
+  min_rr_ratio: 1.5          # Minimum R:R floor
+  friction_pct: 0.03         # Slippage + brokerage friction on P&L side
+
+model:
+  model_path: "data/banknifty_ensemble_5m.pkl"
+  probability_threshold: 0.30  # Optimal Platt-calibrated probability threshold
+  features_count: 18
+
+filters:
+  min_atr_regime: 0.20       # Volatility regime filter (atr_regime >= 0.20)
+  session_filter_enabled: true
+  trading_start_time: "09:30"
+  trading_end_time: "15:00"
+
+risk:
+  initial_capital: 1000000.0  # ₹10,00,000 initial capital
+  risk_per_trade_pct: 0.01    # 1.0% capital risk per trade (aligned across all configs)
+  max_open_positions: 1      # Strict max 1 open trade at a time
+  max_daily_loss_pct: 0.03   # 3.0% max daily drawdown circuit breaker (₹30,000)
+  max_drawdown_limit_pct: 0.35 # 35.0% max account drawdown limit
+
+storage:
+  db_path: "data/trader.db"
+  trades_table: "trades"

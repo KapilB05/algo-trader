@@ -1,0 +1,1 @@
+"""Analysis package — benchmark-relative performance attribution."""

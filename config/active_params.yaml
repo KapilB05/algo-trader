@@ -1,0 +1,12 @@
+regime: BREAKOUT_CONFLUENCE
+vix_band: NORMAL (12-14)
+allowed_strategies:
+- CONFLUENCE_MOMENTUM_BREAKOUT
+max_risk_per_trade_pct: 2.0
+min_reward_risk_ratio: 2.0
+daily_drawdown_lockout_pct: 5.0
+max_open_risk_cap_pct: 6.0
+lot_size_nifty: 65
+lot_size_banknifty: 30
+updated_at: '2026-10-08T08:55:15.314892+05:30'
+trace_id: 6a3343be-1da6-449e-98c0-14de31cf031e

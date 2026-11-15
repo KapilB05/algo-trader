@@ -1,0 +1,11 @@
+# Single Source of Truth for Instrument Lot Sizes
+# Effective dates:
+# - Post 2026-01-01 (NSE circular): BANKNIFTY=30, NIFTY=65
+# - Pre 2026-01-01 (Historical): BANKNIFTY=35 (formerly 15/35), NIFTY=75 (formerly 25/50/75)
+
+lot_sizes:
+  BANKNIFTY: 30
+  NIFTY: 65
+  pre_2026:
+    BANKNIFTY: 35
+    NIFTY: 75

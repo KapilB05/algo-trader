@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#070a12">
+  <meta name="description" content="Algo Trader Pro — Institutional Grade Quantitative Option Trading Terminal">
+  <title>ALGO TRADER PRO — Live Execution Terminal</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- TradingView Lightweight Charts -->
+  <script src="/static/js/lightweight-charts.js"></script>
+
+  <!-- Modern Institutional Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css?v=3.2.3">
+
+
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- ── 1. Top Navigation Bar (Header) ──────────────────────────────────── -->
+    <header class="top-header">
+      <!-- Brand & Broker Connection -->
+      <div class="brand-section">
+        <div class="brand-logo" title="Algo Trader Pro Institutional">⚡</div>
+        <div class="brand-title">ALGO TRADER <span style="color: var(--color-cyan);">PRO</span></div>
+        <div class="broker-badge">
+          <span class="pulse-dot green"></span>
+          <span id="header-broker-status">ANGEL ONE CONNECTED</span>
+        </div>
+      </div>
+
+      <!-- Live Ticker Strip (Indices, VIX, Regime, PCR) -->
+      <div class="ticker-strip">
+        <div class="ticker-item">
+          <span class="ticker-label">BANKNIFTY:</span>
+          <span id="ticker-bn-price" class="ticker-val cyan">₹56,245.00</span>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-label">NIFTY 50:</span>
+          <span id="ticker-nf-price" class="ticker-val green">₹24,360.50</span>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-label">INDIA VIX:</span>
+          <span id="ticker-vix-val" class="ticker-val green">13.25</span>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-label">REGIME:</span>
+          <span id="ticker-regime-val" class="ticker-val green">TRENDING</span>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-label">PCR:</span>
+          <span id="ticker-pcr-val" class="ticker-val green">1.25 (BULLISH)</span>
+        </div>
+      </div>
+
+      <!-- Header Action Controls -->
+      <div class="header-actions">
+        <!-- Mode Switcher (Paper vs Live) -->
+        <button id="btn-mode-toggle" class="hdr-btn cyan" onclick="Signals.toggleExecMode()" title="Toggle Paper vs Live Broker Mode">
+          <span class="pulse-dot green"></span>
+          <span id="mode-status-text">PAPER TRADING</span>
+        </button>
+
+        <!-- Notification Center Drawer Trigger -->
+        <button id="btn-notifications-toggle" class="hdr-btn cyan" onclick="Notifications.toggleDrawer(true)" title="Open Notification Center & Trade Alerts Feed">
+          <span id="alerts-icon">🔔</span>
+          <span class="btn-label">NOTIFICATIONS</span>
+          <span id="header-notif-badge" class="pos-badge-count" style="display: none; background: #0284c7; color: #fff;">0</span>
+        </button>
+
+        <!-- Market Direction Indicator -->
+        <button id="btn-direction-indicator" class="hdr-btn cyan desktop-only" onclick="toggleDirectionModal(true)" title="Open Market Direction & Daily Pivot Radar">
+          <span>🧭</span>
+          <span id="direction-indicator-text" class="btn-label">DIRECTION: UP</span>
+        </button>
+
+        <!-- Engine Master State Toggle -->
+        <button id="btn-engine-toggle" class="hdr-btn green" onclick="toggleEngineState()" title="Pause or Resume Algo Execution">
+          <span class="pulse-dot green"></span>
+          <span id="engine-toggle-text">ENGINE: ACTIVE</span>
+        </button>
+
+        <div class="hdr-sep"></div>
+
+        <!-- Option Chain Modal Trigger -->
+        <button class="hdr-btn cyan desktop-only" onclick="toggleOptionChainModal(true)" title="Open Real-Time Greeks & Option Chain">
+          <span>📊</span>
+          <span class="btn-label">OPTION CHAIN</span>
+        </button>
+
+        <!-- Scan Now Trigger -->
+        <button id="btn-scan-signals" class="hdr-btn amber desktop-only" onclick="Signals.fetchSignals()" title="Trigger On-Demand Signal Scan">
+          <span>⚡</span>
+          <span class="btn-label">SCAN NOW</span>
+        </button>
+
+        <!-- Panic Button / Square Off All -->
+        <button id="btn-panic-all" class="hdr-btn danger" onclick="emergencySquareOffAll()" title="Instant Emergency Close of All Open Positions">
+          <span>🚨</span>
+          <span class="btn-label">SQUARE OFF ALL</span>
+        </button>
+
+        <!-- Trader Guide Trigger -->
+        <button id="btn-quick-guide" class="hdr-btn purple desktop-only" onclick="toggleGuideModal(true)" title="Open Quick Trader Rules Guide">
+          <span>📖</span>
+          <span class="btn-label">GUIDE</span>
+        </button>
+
+        <!-- AI Intelligence Lab Link -->
+        <a href="/ml" class="hdr-btn cyan desktop-only" style="text-decoration: none;" title="Open Quant ML Intelligence & Neural Telemetry Cockpit">
+          <span>🧠</span>
+          <span class="btn-label">AI LAB</span>
+        </a>
+
+        <!-- Settings / System Health Drawer Trigger -->
+        <button id="btn-settings-drawer" class="hdr-btn icon-only" onclick="toggleSettingsDrawer(true)" title="System Health & Settings">
+          <span>⚙️</span>
+        </button>
+
+        <!-- Mobile Navigation Menu Toggle -->
+        <button class="mobile-nav-toggle" onclick="toggleSettingsDrawer(true)" aria-label="Open Navigation Menu">
+          ☰
+        </button>
+      </div>
+    </header>
+
+    <!-- ── 2. Main 1-Screen Responsive Workspace ───────────────────────────── -->
+    <main class="main-workspace">
+
+      <!-- Left Stage: TradingView Lightweight Candlestick Chart (65%) -->
+      <section class="chart-stage">
+        <!-- Interactive Chart Toolbar -->
+        <div class="chart-toolbar">
+          <div class="toolbar-group">
+            <!-- Symbol Switcher -->
+            <button class="tool-btn chart-sym-btn active" data-symbol="BANKNIFTY FUT" onclick="Signals.setSymbol('BANKNIFTY')">BANKNIFTY FUT</button>
+            <button class="tool-btn chart-sym-btn" data-symbol="NIFTY 50" onclick="Signals.setSymbol('NIFTY')">NIFTY 50</button>
+            <span style="color: var(--border-subtle); margin: 0 4px;">|</span>
+            <!-- Timeframe Switcher -->
+            <button class="tool-btn chart-tf-btn" data-tf="1m">1m</button>
+            <button class="tool-btn chart-tf-btn active" data-tf="5m">5m</button>
+            <button class="tool-btn chart-tf-btn" data-tf="15m">15m</button>
+            <button class="tool-btn chart-tf-btn" data-tf="1d">1D</button>
+          </div>
+
+          <div class="toolbar-group">
+            <!-- Indicators & Strategy Overlays -->
+            <button id="btn-toggle-ema" class="tool-btn active" onclick="toggleIndicator('ema')">EMA 9/21</button>
+            <button id="btn-toggle-vwap" class="tool-btn active" onclick="toggleIndicator('vwap')">VWAP</button>
+            <button id="btn-chart-lines" class="tool-btn active" onclick="ChartEngine.toggleStrategyLevels()">🎯 Levels</button>
+            <button id="btn-toggle-markers" class="tool-btn" onclick="ChartEngine.toggleTradeMarkers()">🏷️ Markers</button>
+            <button id="btn-chart-fit" class="tool-btn" title="Fit Chart to Viewport">⟲</button>
+            <button id="btn-chart-snapshot" class="tool-btn" title="Capture Chart Screenshot">📸</button>
+          </div>
+        </div>
+
+        <!-- Chart Viewport -->
+        <div id="tv-chart-wrapper">
+          <div id="tv-chart"></div>
+        </div>
+
+        <!-- Chart Legend & Options Summary Bar -->
+        <div class="chart-legend-bar">
+          <div class="legend-ohlc">
+            <span id="legend-sym" class="legend-chip sym">BANKNIFTY FUT 5M</span>
+            <span class="legend-chip"><span>O</span> <b id="legend-o">--</b></span>
+            <span class="legend-chip"><span>H</span> <b id="legend-h">--</b></span>
+            <span class="legend-chip"><span>L</span> <b id="legend-l">--</b></span>
+            <span class="legend-chip"><span>C</span> <b id="legend-c">--</b></span>
+            <span class="legend-chip"><span>VOL</span> <b id="legend-v">--</b></span>
+          </div>
+          <div class="legend-opt-info">
+            <span class="legend-chip"><span>PCR</span> <b id="oc-pcr" class="text-green">—</b></span>
+            <span class="legend-chip"><span>MAX PAIN</span> <b id="oc-maxpain">—</b></span>
+            <span class="legend-chip"><span>ATM</span> <b id="oc-atm">—</b></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Stage: Systematic Modular Cockpit (35%) ────────────────────── -->
+      <aside class="cockpit-panel">
+
+        <!-- Persistent Account P&L & Risk Hero Card -->
+        <div id="hero-pnl-card" class="hero-pnl-card">
+          <div class="hero-header">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="hero-label">TODAY'S NET P&L</span>
+              <span id="hero-status-pill" class="status-pill good" style="font-size: 9px; padding: 2px 6px;">ACTIVE SESSION</span>
+            </div>
+            <span id="ist-clock" class="hero-clock">11:20:00 AM IST</span>
+          </div>
+          <div id="hero-net-pnl" class="hero-amount">—</div>
+          <div class="hero-substats">
+            <div class="substat-item">
+              <span class="substat-label">WIN RATE</span>
+              <span id="hero-winrate" class="substat-val text-green">—</span>
+              <div class="win-progress-bar">
+                <div id="hero-win-bar" class="win-progress-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+            <div class="substat-item">
+              <span class="substat-label">AVAIL MARGIN</span>
+              <span id="hero-margin" class="substat-val">—</span>
+            </div>
+            <div class="substat-item">
+              <span class="substat-label">DAILY RISK</span>
+              <span id="hero-risk" class="substat-val">0.0% / 3.0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cockpit Instrument Selector Bar -->
+        <div class="cockpit-sym-bar">
+          <button id="btn-cockpit-bn" class="cockpit-sym-btn active" onclick="Signals.setSymbol('BANKNIFTY')">
+            BANK NIFTY (30)
+          </button>
+          <button id="btn-cockpit-nf" class="cockpit-sym-btn" onclick="Signals.setSymbol('NIFTY')">
+            NIFTY 50 (65)
+          </button>
+        </div>
+
+        <!-- Cockpit Modular Tabs Header -->
+        <nav class="cockpit-tabs-nav" aria-label="Cockpit Navigation">
+          <button class="cockpit-tab-btn active" data-tab="radar" onclick="switchCockpitTab('radar')">
+            <span>⚡</span> Radar & Signals
+          </button>
+          <button class="cockpit-tab-btn" data-tab="execution" onclick="switchCockpitTab('execution')">
+            <span>💼</span> Positions & Order
+          </button>
+          <button class="cockpit-tab-btn" data-tab="brain" onclick="switchCockpitTab('brain')">
+            <span>🧠</span> AI & PCR
+          </button>
+          <button class="cockpit-tab-btn" data-tab="trades" onclick="switchCockpitTab('trades')">
+            <span>📦</span> Arb & History
+          </button>
+          <button class="cockpit-tab-btn" data-tab="notifications" onclick="switchCockpitTab('notifications')">
+            <span>🔔</span> Notifications <span id="cockpit-notif-count" class="pos-badge-count">0</span>
+          </button>
+        </nav>
+
+        <!-- Cockpit Tab Panes Container -->
+        <div class="cockpit-content-container">
+
+          <!-- ── PANE 1: RADAR & SIGNALS (Default View) ─────────────────────── -->
+          <div id="tab-radar" class="cockpit-tab-pane active">
+
+            <!-- Primary 5M Signal Radar Card -->
+            <div id="option-signal-card" class="signal-card buy">
+              <div class="signal-header">
+                <div class="signal-badge">
+                  <span class="pulse-dot green"></span>
+                  <span id="signal-badge-text">LIVE SIGNAL: 5M CONFLUENCE</span>
+                </div>
+                <div class="signal-autopilot">
+                  <label class="switch-label" title="Enable to execute high-confidence signals automatically">
+                    <input type="checkbox" id="autopilot-switch" onchange="toggleAutoPilot(this.checked)">
+                    <span class="switch-slider"></span>
+                    <span style="font-size: 10px; font-family: var(--font-mono); font-weight: 700; color: #fff;">AUTO-PILOT</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Headline -->
+              <div id="signal-headline" class="signal-title buy">
+                STANDBY — awaiting live signal
+              </div>
+
+              <!-- Signal Details Grid -->
+              <div id="signal-details-grid" class="signal-grid">
+                <div><span>Entry:</span> <b id="sig-entry" class="text-cyan">—</b></div>
+                <div><span>Stop Loss:</span> <b id="sig-sl" class="text-red">—</b></div>
+                <div><span>Target (1:2):</span> <b id="sig-target" class="text-green">—</b></div>
+                <div><span>Risk/Reward:</span> <b id="sig-rr">—</b></div>
+              </div>
+
+              <!-- Signal Reasons / Confluence Factors -->
+              <div id="signal-reasons-box" class="signal-reasons">
+                <div>• Waiting for live confluence scan…</div>
+              </div>
+
+              <!-- 1-Click Instant Action Button -->
+              <button id="btn-execute-signal" onclick="executePrimarySignal()" class="btn-execute-signal buy">
+                ⚡ 1-Click Execute (no live signal)
+              </button>
+            </div>
+
+            <!-- Defined-Risk Bangur Research Spreads Card -->
+            <div id="research-spreads-card" class="research-spreads-card">
+              <div class="spreads-header">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <span style="font-size: 14px;">🎓</span>
+                  <span style="font-size: 11px; font-weight: 800; color: #fff; letter-spacing: 0.3px; text-transform: uppercase;">
+                    Defined-Risk Spreads (Bangur 2.75x)
+                  </span>
+                </div>
+                <span id="kelly-sizing-badge" class="kelly-badge" title="Wu et al. (2022) Fractional Kelly Sizing">
+                  Kelly: 1 Lot (2% Cap)
+                </span>
+              </div>
+              <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 10px; line-height: 1.35;">
+                Academically backtested edge: Selling OTM wing eliminates 60% of Theta decay while strictly eliminating tail risk.
+              </div>
+              <div class="spreads-actions-grid">
+                <button id="btn-spread-bull-call" onclick="Signals.executeSpread('BULL_CALL')" class="spread-btn bull" title="Execute Bangur 2.75x Bull Call Spread">
+                  <div style="font-weight: 800; font-size: 11px; display: flex; justify-content: space-between;">
+                    <span>📈 Bull Call Spread</span>
+                    <span id="spread-bcs-debit" class="text-green">Net ₹42.0</span>
+                  </div>
+                  <div id="spread-bcs-desc" style="font-size: 9.5px; opacity: 0.85; margin-top: 3px; font-family: var(--font-mono);">
+                    Buy ATM CE + Sell OTM CE (Loss: ₹1,260 | Profit: ₹1,740)
+                  </div>
+                </button>
+                <button id="btn-spread-bear-put" onclick="Signals.executeSpread('BEAR_PUT')" class="spread-btn bear" title="Execute Bangur Bear Put Spread">
+                  <div style="font-weight: 800; font-size: 11px; display: flex; justify-content: space-between;">
+                    <span>📉 Bear Put Spread</span>
+                    <span id="spread-bps-debit" class="text-red">Net ₹42.0</span>
+                  </div>
+                  <div id="spread-bps-desc" style="font-size: 9.5px; opacity: 0.85; margin-top: 3px; font-family: var(--font-mono);">
+                    Buy ATM PE + Sell OTM PE (Loss: ₹1,260 | Profit: ₹1,740)
+                  </div>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ── PANE 2: EXECUTION & ACTIVE POSITIONS ───────────────────────── -->
+          <div id="tab-execution" class="cockpit-tab-pane">
+
+            <!-- Position Segregation Filter Bar -->
+            <div class="pos-filter-bar">
+              <button id="pos-filter-all" class="pos-filter-btn active" onclick="Positions.setFilter('ALL')">
+                <span>ALL</span> <span id="count-all-pos" class="pos-badge-count">0</span>
+              </button>
+              <button id="pos-filter-fut" class="pos-filter-btn fut" onclick="Positions.setFilter('FUTURES')">
+                <span>📈 FUTURES</span> <span id="count-futures-pos" class="pos-badge-count">0</span>
+              </button>
+              <button id="pos-filter-opt" class="pos-filter-btn opt" onclick="Positions.setFilter('OPTIONS')">
+                <span>⚡ OPTIONS</span> <span id="count-options-pos" class="pos-badge-count">0</span>
+              </button>
+            </div>
+
+            <!-- Segregated Live P&L Ticker Strip -->
+            <div class="pos-summary-pills" id="pos-summary-pills">
+              <div class="summary-pill fut">
+                <span class="pill-lbl">📈 FUTURES P&L</span>
+                <span id="pos-summary-fut-pnl" class="pill-val">₹0.00</span>
+              </div>
+              <div class="summary-pill opt">
+                <span class="pill-lbl">⚡ OPTIONS P&L</span>
+                <span id="pos-summary-opt-pnl" class="pill-val">₹0.00</span>
+              </div>
+            </div>
+
+            <!-- Active Open Positions Container (Segregated Cards) -->
+            <div id="active-position-container">
+              <div class="standby-card">
+                <div class="standby-icon">🛡️</div>
+                <div style="font-weight: 800; color: #fff; margin-bottom: 4px; font-size: 12px; letter-spacing: 0.3px;">STANDBY MODE (NO ACTIVE TRADES)</div>
+                <div style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Capital is safely preserved in cash. Engine scanning 5m candles for high-confluence breakout setups.</div>
+              </div>
+            </div>
+
+            <!-- Quick 1-Click Option Order Ticket -->
+            <div class="quick-order-card">
+              <div class="quick-order-header">
+                <span id="quick-ticket-title" style="font-size: 10.5px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">
+                  ⚡ Quick ATM Strikes (BANKNIFTY)
+                </span>
+                <div class="lot-selector">
+                  <span style="font-size: 9.5px; color: var(--text-muted);">LOTS:</span>
+                  <button id="lot-btn-1" class="lot-btn active" data-lots="1" onclick="setQuickLots(1, this)">1x (30)</button>
+                  <button id="lot-btn-2" class="lot-btn" data-lots="2" onclick="setQuickLots(2, this)">2x (60)</button>
+                  <button id="lot-btn-4" class="lot-btn" data-lots="4" onclick="setQuickLots(4, this)">4x (120)</button>
+                </div>
+              </div>
+              <div class="quick-buttons-row">
+                <button id="btn-quick-atm-ce" onclick="quickBuyOption('CE')" class="btn-quick-buy ce">
+                  <span style="font-weight: 800; font-size: 12px;">BUY ATM CALL</span>
+                  <span id="quick-ce-label" style="font-size: 10px; opacity: 0.9;">—</span>
+                </button>
+                <button id="btn-quick-atm-pe" onclick="quickBuyOption('PE')" class="btn-quick-buy pe">
+                  <span style="font-weight: 800; font-size: 12px;">BUY ATM PUT</span>
+                  <span id="quick-pe-label" style="font-size: 10px; opacity: 0.9;">—</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ── PANE 3: AI INTELLIGENCE & PCR TELEMETRY ────────────────────── -->
+          <div id="tab-brain" class="cockpit-tab-pane">
+
+            <!-- Strategy Brain & Telemetry Card -->
+            <div class="brain-card">
+              <div class="brain-title">
+                <span>ALGO INTELLIGENCE & TELEMETRY</span>
+                <span class="text-green">● ACTIVE</span>
+              </div>
+              <div id="algo-brain-status" class="brain-status-text">
+                Targeting 5m breakout above key resistance with 1:2 R:R
+              </div>
+              <div class="pills-row" style="margin-bottom: 12px;">
+                <span id="pill-vix" class="status-pill good" title="India VIX Threshold">VIX: 13.25 OK</span>
+                <span id="pill-adx" class="status-pill good" title="ADX Trend Strength">ADX: 26.4 TRENDING</span>
+                <span id="pill-iv" class="status-pill good" title="Black-Scholes IV Shield">IV-SHIELD: SAFE</span>
+                <span id="pill-session" class="status-pill good" title="Session Timing Quality Gate">SESSION: 09:30-14:45</span>
+              </div>
+
+              <!-- 6-Layer Intelligence Architecture Overview -->
+              <div style="display: flex; flex-direction: column; gap: 6px; font-size: 11px; font-family: var(--font-mono);">
+                <div style="display: flex; justify-content: space-between; padding: 6px 8px; background: rgba(0,0,0,0.25); border-radius: 6px;">
+                  <span style="color: var(--text-muted);">Layer 1: Regime</span>
+                  <span class="text-green">ADX Trend Gate (ADX &ge; 20)</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 6px 8px; background: rgba(0,0,0,0.25); border-radius: 6px;">
+                  <span style="color: var(--text-muted);">Layer 2: Consensus</span>
+                  <span class="text-cyan">3/3 Agreement (ORB + ST + Flow)</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 6px 8px; background: rgba(0,0,0,0.25); border-radius: 6px;">
+                  <span style="color: var(--text-muted);">Layer 3: Jane Street</span>
+                  <span class="text-green">2-Bar Confirmation Active</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 6px 8px; background: rgba(0,0,0,0.25); border-radius: 6px;">
+                  <span style="color: var(--text-muted);">Layer 4: ML Gate</span>
+                  <span class="text-cyan">P(Win) &ge; 65% Hurdle</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 6px 8px; background: rgba(0,0,0,0.25); border-radius: 6px;">
+                  <span style="color: var(--text-muted);">Layer 5: RL Exit</span>
+                  <span class="text-purple">Dynamic Breakeven & Trailing</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 6px 8px; background: rgba(0,0,0,0.25); border-radius: 6px;">
+                  <span style="color: var(--text-muted);">Layer 6: PCR Guard</span>
+                  <span class="text-green">Call/Put Trap Shield Active</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ── PANE 4: ARBITRAGE & ORDER LOG ──────────────────────────────── -->
+          <div id="tab-trades" class="cockpit-tab-pane">
+
+            <!-- Arbitrage Monitor (PCP Box & Stat Pairs) -->
+            <div class="brain-card">
+              <div class="brain-title">
+                <span>📦 ARBITRAGE MONITOR (PAPER)</span>
+                <span id="arb-fresh" class="status-pill" style="font-size: 9px;">no data yet</span>
+              </div>
+              <div class="pills-row" id="arb-box-pills"></div>
+              <div id="arb-box-body" class="trades-list-wrapper">
+                <div style="text-align: center; color: var(--text-muted); padding: 14px 0; font-size: 11px;">Loading arbitrage feed...</div>
+              </div>
+              <div class="pills-row" id="arb-pairs-pills" style="margin-top: 8px;"></div>
+              <div id="arb-pairs-body" class="trades-list-wrapper"></div>
+              <button onclick="if(window.Arb) Arb.scanNow()" class="hdr-btn amber" style="margin-top: 10px; width: 100%; justify-content: center;" title="On-demand paper arb scan (no orders)">
+                <span>📦 SCAN ARB NOW (PAPER)</span>
+              </button>
+            </div>
+
+            <!-- Today's Executed Trades History -->
+            <div class="trades-card">
+              <div class="trades-header">
+                <span class="trades-title">TODAY'S EXECUTED TRADES</span>
+                <span id="trades-count-badge" class="trades-count">—</span>
+              </div>
+              <div id="trades-list-container" class="trades-list-wrapper">
+                <div style="text-align: center; color: var(--text-muted); padding: 24px 0;">Loading trade history...</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ── PANE 5: NOTIFICATIONS & TRADE AUDIT FEED ────────────────────── -->
+          <div id="tab-notifications" class="cockpit-tab-pane">
+
+            <!-- Notification Control Strip -->
+            <div class="notif-controls-bar">
+              <div class="notif-controls-left">
+                <button id="btn-notif-sound-pane" class="notif-tool-btn active" onclick="Notifications.toggleSound()" title="Toggle Web Audio Synthesizer Chime">
+                  🔊 Sound: ON
+                </button>
+                <button id="btn-notif-desk-pane" class="notif-tool-btn active" onclick="Notifications.toggleDesktop()" title="Toggle Windows Desktop Popups">
+                  🖥️ Desktop: ON
+                </button>
+                <button class="notif-tool-btn test" onclick="Notifications.testAlert()" title="Send Test Trade Notification">
+                  ⚡ Test Alert
+                </button>
+              </div>
+              <div class="notif-controls-right">
+                <button class="notif-tool-btn" onclick="Notifications.markAllRead()" title="Mark All as Read">
+                  ✓ Read All
+                </button>
+                <button class="notif-tool-btn danger" onclick="Notifications.clearAll()" title="Clear Notification History">
+                  🗑️ Clear
+                </button>
+              </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="notif-filter-bar">
+              <button class="notif-filter-btn active" data-notif-filter="ALL" onclick="Notifications.setFilter('ALL')">
+                ALL <span class="filter-count">0</span>
+              </button>
+              <button class="notif-filter-btn" data-notif-filter="POSITION" onclick="Notifications.setFilter('POSITION')">
+                🟢 POSITIONS <span class="filter-count">0</span>
+              </button>
+              <button class="notif-filter-btn" data-notif-filter="SIGNAL" onclick="Notifications.setFilter('SIGNAL')">
+                ⚡ SIGNALS <span class="filter-count">0</span>
+              </button>
+              <button class="notif-filter-btn" data-notif-filter="RISK" onclick="Notifications.setFilter('RISK')">
+                🛡️ RISK & SL <span class="filter-count">0</span>
+              </button>
+            </div>
+
+            <!-- Notifications Feed List Container -->
+            <div id="notif-pane-feed-list" class="notif-feed-list"></div>
+
+          </div>
+
+        </div>
+      </aside>
+
+    </main>
+
+    <!-- ── 3. Mobile Segmented Bottom Navigation (< 768px) ─────────────────── -->
+    <nav class="mobile-bottom-nav" aria-label="Mobile Navigation">
+      <button class="mobile-nav-btn active" data-stage="chart" onclick="switchMobileStage('chart')">
+        <span class="icon">📊</span>
+        <span>Chart</span>
+      </button>
+      <button class="mobile-nav-btn" data-stage="radar" onclick="switchMobileStage('radar')">
+        <span class="icon">⚡</span>
+        <span>Radar</span>
+      </button>
+      <button class="mobile-nav-btn" data-stage="execution" onclick="switchMobileStage('execution')">
+        <span class="icon">💼</span>
+        <span>Positions</span>
+      </button>
+      <button class="mobile-nav-btn" data-stage="brain" onclick="switchMobileStage('brain')">
+        <span class="icon">🧠</span>
+        <span>AI & PCR</span>
+      </button>
+      <button class="mobile-nav-btn" data-stage="notifications" onclick="switchMobileStage('notifications')">
+        <span class="icon">🔔</span>
+        <span>Alerts</span>
+      </button>
+    </nav>
+
+    <!-- ── 4. Settings & System Health Drawer ──────────────────────────────── -->
+    <div id="settings-drawer" class="drawer-overlay">
+      <script>document.getElementById('settings-drawer').addEventListener('click', function(e) { if(e.target===this) toggleSettingsDrawer(false); });</script>
+      <div class="drawer-content">
+        <div class="drawer-header">
+          <div class="drawer-title">⚙️ System Health & Broker Status</div>
+          <button onclick="toggleSettingsDrawer(false)" class="btn-close-drawer">✕</button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="health-check-item">
+            <span>Broker API (Angel One)</span>
+            <span id="drawer-broker-health" class="status-pill good">CONNECTED</span>
+          </div>
+          <div class="health-check-item">
+            <span>Volatility Gate (India VIX)</span>
+            <span id="drawer-vix-health" class="status-pill good">VIX 13.25 READY</span>
+          </div>
+          <div class="health-check-item">
+            <span>Market Regime Classifier</span>
+            <span id="drawer-regime-health" class="status-pill good">TRENDING OK</span>
+          </div>
+          <div class="health-check-item">
+            <span>Financial Kill-Switch (3% Cap)</span>
+            <span id="drawer-killswitch-health" class="status-pill good">ARMED (0.0% P&L)</span>
+          </div>
+          <div class="health-check-item">
+            <span>SQLite Local Audit DB</span>
+            <span id="drawer-db-health" class="status-pill good">SYNCED</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: var(--radius-sm); font-size: 11px; color: var(--text-muted); line-height: 1.5;">
+          <div style="font-weight: 700; color: #fff; margin-bottom: 4px;">Institutional Safety Bounds:</div>
+          <div>• Max Trade Risk: 1.0% Capital</div>
+          <div>• Daily Drawdown Shutdown: 3.0% Max</div>
+          <div>• Jane Street Anti-Spoofing: 2-Bar Confirmation</div>
+          <div>• Expiry Day Mandatory Square-off: 14:30 IST</div>
+          <div>• EOD Intraday Square-off: 15:15 IST</div>
+        </div>
+
+        <div style="margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border-subtle);">
+          <button onclick="location.reload()" class="hdr-btn cyan" style="width: 100%; justify-content: center; padding: 9px;">
+            ⟲ Refresh Terminal Data
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 5. Notifications Slide-Over Drawer ─────────────────────────────── -->
+    <div id="notifications-drawer" class="drawer-overlay">
+      <script>document.getElementById('notifications-drawer').addEventListener('click', function(e) { if(e.target===this) Notifications.toggleDrawer(false); });</script>
+      <div class="drawer-content notif-drawer-content">
+        <div class="drawer-header">
+          <div class="drawer-title">🔔 Trade Alerts & Audit Feed</div>
+          <button onclick="Notifications.toggleDrawer(false)" class="btn-close-drawer">✕</button>
+        </div>
+
+        <!-- Controls in Drawer -->
+        <div class="notif-controls-bar">
+          <div class="notif-controls-left">
+            <button id="btn-notif-sound-drawer" class="notif-tool-btn active" onclick="Notifications.toggleSound()">
+              🔊 Sound: ON
+            </button>
+            <button id="btn-notif-desk-drawer" class="notif-tool-btn active" onclick="Notifications.toggleDesktop()">
+              🖥️ Desktop: ON
+            </button>
+            <button class="notif-tool-btn test" onclick="Notifications.testAlert()">
+              ⚡ Test
+            </button>
+          </div>
+          <div class="notif-controls-right">
+            <button class="notif-tool-btn danger" onclick="Notifications.clearAll()">
+              🗑️ Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- Filters in Drawer -->
+        <div class="notif-filter-bar">
+          <button class="notif-filter-btn active" data-notif-filter="ALL" onclick="Notifications.setFilter('ALL')">
+            ALL <span class="filter-count">0</span>
+          </button>
+          <button class="notif-filter-btn" data-notif-filter="POSITION" onclick="Notifications.setFilter('POSITION')">
+            🟢 POSITIONS <span class="filter-count">0</span>
+          </button>
+          <button class="notif-filter-btn" data-notif-filter="SIGNAL" onclick="Notifications.setFilter('SIGNAL')">
+            ⚡ SIGNALS <span class="filter-count">0</span>
+          </button>
+          <button class="notif-filter-btn" data-notif-filter="RISK" onclick="Notifications.setFilter('RISK')">
+            🛡️ RISK & SL <span class="filter-count">0</span>
+          </button>
+        </div>
+
+        <!-- Scrollable Feed List -->
+        <div id="notif-drawer-feed-list" class="notif-feed-list" style="max-height: calc(100vh - 180px);"></div>
+      </div>
+    </div>
+
+    <!-- ── 5. Option Chain Live Modal ──────────────────────────────────────── -->
+    <div id="option-chain-modal" class="oc-modal-overlay">
+      <script>document.getElementById('option-chain-modal').addEventListener('click', function(e) { if(e.target===this) toggleOptionChainModal(false); });</script>
+      <div class="oc-modal-box">
+        <div class="oc-modal-header">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 4px; background: rgba(0,0,0,0.35); padding: 3px; border-radius: 6px; border: 1px solid var(--border-subtle);">
+              <button id="btn-oc-modal-bn" class="oc-modal-tab-btn active" onclick="Signals.setModalOptionChainSymbol('BANKNIFTY')">BANK NIFTY</button>
+              <button id="btn-oc-modal-nf" class="oc-modal-tab-btn" onclick="Signals.setModalOptionChainSymbol('NIFTY')">NIFTY 50</button>
+            </div>
+            <span id="oc-modal-title" style="font-weight: 800; color: #fff; font-size: 13.5px;">📊 BANKNIFTY LIVE OPTION CHAIN</span>
+            <span id="modal-oc-spot" style="font-family: var(--font-mono); font-size: 11px; color: var(--color-cyan); font-weight: 700;">Spot: —</span>
+            <span id="modal-oc-pcr" style="font-family: var(--font-mono); font-size: 11px; color: var(--color-green); font-weight: 700;">PCR: —</span>
+            <span id="modal-oc-maxpain" style="font-family: var(--font-mono); font-size: 11px; color: var(--color-amber); font-weight: 700;">Max Pain: —</span>
+          </div>
+          <button onclick="toggleOptionChainModal(false)" class="btn-close-drawer">✕</button>
+        </div>
+        <div style="overflow-y: auto; max-height: 70vh;">
+          <table class="oc-modal-table">
+            <thead>
+              <tr>
+                <th style="color: var(--color-cyan);">CALLS OI</th>
+                <th style="color: var(--color-green);">CALLS LTP</th>
+                <th>ACTION</th>
+                <th style="background: rgba(0,0,0,0.6); color: #fff;">STRIKE</th>
+                <th>ACTION</th>
+                <th style="color: var(--color-red);">PUTS LTP</th>
+                <th style="color: var(--color-amber);">PUTS OI</th>
+              </tr>
+            </thead>
+            <tbody id="oc-modal-table-body">
+              <!-- Populated dynamically via /api/option-chain -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 6. Market Direction & Pivot Radar Modal ──────────────────────────── -->
+    <div id="direction-modal" class="guide-modal-overlay">
+      <script>document.getElementById('direction-modal').addEventListener('click', function(e) { if(e.target===this) toggleDirectionModal(false); });</script>
+      <div class="guide-modal-box" style="max-width: 860px;">
+        <div class="guide-modal-header">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 20px;">🧭</span>
+            <div>
+              <div style="font-weight: 800; color: #fff; font-size: 14px;">LIVE MARKET DIRECTION & INTRADAY PIVOT RADAR</div>
+              <div style="font-size: 10.5px; color: var(--text-muted);">Real-time directional bias computed from spot levels, daily pivot benchmarks & macro volatility</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="modal-clock-direction" style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);">LIVE IST</span>
+            <button onclick="toggleDirectionModal(false)" class="btn-close-drawer">✕</button>
+          </div>
+        </div>
+
+        <div class="guide-content-body">
+          <!-- Master Direction Banner -->
+          <div id="modal-direction-banner" class="direction-banner">
+            <div>
+              <div style="font-size: 10px; text-transform: uppercase; color: var(--text-muted); font-weight: 800; margin-bottom: 2px;">AGGREGATE MARKET DIRECTION</div>
+              <div id="modal-direction-verdict" class="direction-banner-title">
+                <span>🟢</span> <span>UP (BULLISH ABOVE PIVOT)</span>
+              </div>
+              <div id="modal-direction-sub" style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                Spot indices are trading comfortably above Daily Pivot benchmarks with low volatility tailwinds.
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 9.5px; color: var(--text-muted); font-family: var(--font-mono); font-weight: 700;">INDIA VIX STATUS</div>
+              <div id="modal-vix-pill" style="font-size: 20px; font-weight: 900; color: #fbbf24; font-family: var(--font-mono); line-height: 1.1;">11.27</div>
+              <div id="modal-vix-status" style="font-size: 9.5px; color: #34d399; font-weight: 700; margin-top: 2px;">LOW (&lt; 12.0) • STABLE</div>
+            </div>
+          </div>
+
+          <!-- Dual Radar Index Cards: NIFTY 50 vs BANK NIFTY -->
+          <div class="radar-grid">
+            <!-- NIFTY 50 Card -->
+            <div class="radar-card" style="border-top: 3px solid #10b981;">
+              <div class="radar-card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div style="font-weight: 800; font-size: 13px; color: #fff;">NIFTY 50 RADAR</div>
+                <span class="status-pill good">BULLISH</span>
+              </div>
+              <div style="font-family: var(--font-mono); font-size: 11px; display: flex; flex-direction: column; gap: 6px;">
+                <div style="display: flex; justify-content: space-between;"><span>Daily Pivot (P):</span> <b>₹24,310.00</b></div>
+                <div style="display: flex; justify-content: space-between;"><span>Resistance 1 (R1):</span> <b class="text-red">₹24,420.00</b></div>
+                <div style="display: flex; justify-content: space-between;"><span>Support 1 (S1):</span> <b class="text-green">₹24,250.00</b></div>
+              </div>
+            </div>
+
+            <!-- BANK NIFTY Card -->
+            <div class="radar-card" style="border-top: 3px solid #06b6d4;">
+              <div class="radar-card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div style="font-weight: 800; font-size: 13px; color: #fff;">BANK NIFTY RADAR</div>
+                <span class="status-pill good">BULLISH</span>
+              </div>
+              <div style="font-family: var(--font-mono); font-size: 11px; display: flex; flex-direction: column; gap: 6px;">
+                <div style="display: flex; justify-content: space-between;"><span>Daily Pivot (P):</span> <b>₹56,150.00</b></div>
+                <div style="display: flex; justify-content: space-between;"><span>Resistance 1 (R1):</span> <b class="text-red">₹56,480.00</b></div>
+                <div style="display: flex; justify-content: space-between;"><span>Support 1 (S1):</span> <b class="text-green">₹55,920.00</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 7. Quick Trader Guide Modal (Bilingual: English / मराठी) ────────── -->
+    <div id="guide-modal" class="guide-modal-overlay">
+      <script>document.getElementById('guide-modal').addEventListener('click', function(e) { if(e.target===this) toggleGuideModal(false); });</script>
+      <div class="guide-modal-box">
+        <div class="guide-modal-header">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 18px;">📖</span>
+            <span id="guide-modal-title-text" style="font-weight: 800; color: #fff; font-size: 14px;">QUICK TRADER GUIDE</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="guide-lang-tabs">
+              <button id="btn-guide-lang-en" class="guide-lang-btn active" onclick="setGuideLanguage('en')">🇬🇧 English</button>
+              <button id="btn-guide-lang-mr" class="guide-lang-btn" onclick="setGuideLanguage('mr')">🇮🇳 मराठी</button>
+            </div>
+            <button onclick="toggleGuideModal(false)" class="btn-close-drawer">✕</button>
+          </div>
+        </div>
+
+        <div class="guide-content-body">
+          <!-- English View -->
+          <div id="guide-content-en">
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+              Everything you need to trade profitably with Algo Trader Pro in 4 simple rules:
+            </div>
+            <div class="guide-cards-grid">
+              <div class="guide-item-card" style="border-left: 3px solid #10b981;">
+                <div class="guide-card-icon">🟢</div>
+                <div class="guide-card-title">1. When to Buy Call / Put</div>
+                <div class="guide-card-desc">
+                  • <b>🟢 BUY CALL</b>: Triggered when 5m candle closes above VWAP with Volume Surge (&ge;1.5x) and EMA 9 &gt; 21.<br>
+                  • <b>🔴 BUY PUT</b>: Triggered on clean breakdown below VWAP.<br>
+                  • <b>1-Click Entry</b>: Stop Loss (-25%) and Target (+50%) are calculated automatically for a <b>1:2 Risk-Reward</b> ratio.
+                </div>
+              </div>
+
+              <div class="guide-item-card" style="border-left: 3px solid #f59e0b;">
+                <div class="guide-card-icon">🛡️</div>
+                <div class="guide-card-title">2. The Chop Defense Shield</div>
+                <div class="guide-card-desc">
+                  • <b>Why Standby?</b>: When the market moves sideways (ADX &lt; 20), option premiums lose value every minute due to <b>Theta Decay</b>.<br>
+                  • <b>Capital Preservation</b>: The terminal automatically gates option buying in chop to <b>prevent 70% of retail option losses</b>. Sit tight until a true breakout occurs!
+                </div>
+              </div>
+
+              <div class="guide-item-card" style="border-left: 3px solid #06b6d4;">
+                <div class="guide-card-icon">🎯</div>
+                <div class="guide-card-title">3. Dynamic Trailing Stop-Loss</div>
+                <div class="guide-card-desc">
+                  • <b>At +15% Profit</b>: Stop Loss automatically moves to your <b>Entry Cost (Breakeven)</b>. Your risk is instantly reduced to <b>Zero</b>!<br>
+                  • <b>At +30% Profit</b>: Stop Loss trails to lock in <b>+15% Net Profit</b>.<br>
+                  • A winning trade will never turn into a loss again.
+                </div>
+              </div>
+
+              <div class="guide-item-card" style="border-left: 3px solid #a855f7;">
+                <div class="guide-card-icon">📦</div>
+                <div class="guide-card-title">4. Official NSE Lot Sizes</div>
+                <div class="guide-card-desc">
+                  • <b>Bank Nifty</b>: <b>30 units per lot</b> (Use 1x=30, 2x=60, 4x=120).<br>
+                  • <b>Nifty 50</b>: <b>65 units per lot</b>.<br>
+                  • <b>Emergency Exit</b>: Click <b>🔴 SQUARE OFF ALL</b> in the top header anytime to immediately close all positions at market price.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Marathi View -->
+          <div id="guide-content-mr" style="display: none;">
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+              अल्गो ट्रेडर प्रो वापरून खात्रीशीर नफा मिळवण्यासाठी ४ सोपे नियम:
+            </div>
+            <div class="guide-cards-grid">
+              <div class="guide-item-card" style="border-left: 3px solid #10b981;">
+                <div class="guide-card-icon">🟢</div>
+                <div class="guide-card-title">१. कॉल व पुट कधी खरेदी करावे?</div>
+                <div class="guide-card-desc">
+                  • <b>🟢 BUY CALL (कॉल खरेदी)</b>: ५ मिनिटांची कॅन्डल VWAP च्या वर बंद होऊन व्हॉल्युम वाढल्यावर कॉल सिग्नल येतो.<br>
+                  • <b>🔴 BUY PUT (पुट खरेदी)</b>: मार्केट VWAP च्या खाली घसरल्यावर पुट सिग्नल येतो.<br>
+                  • <b>१-क्लिक ट्रेडिंग</b>: स्टॉप-लॉस (-२५%) आणि टार्गेट (+५०%) आपोआप <b>१:२ Risk-Reward</b> नुसार सेट होतात.
+                </div>
+              </div>
+
+              <div class="guide-item-card" style="border-left: 3px solid #f59e0b;">
+                <div class="guide-card-icon">🛡️</div>
+                <div class="guide-card-title">२. चॉप डिफेन्स शील्ड (पैसे कसे वाचतात?)</div>
+                <div class="guide-card-desc">
+                  • <b>थांबा (Standby) का?</b>: मार्केट जेव्हा एकाच जागेवर फिरत असते (ADX &lt; 20), तेव्हा कॉल किंवा पुट घेतल्यास <b>Theta Decay</b> मुळे प्रीमियम झपाट्याने वितळतो.<br>
+                  • <b>कॅपिटल संरक्षण</b>: सिस्टीम आपोआप खरेदी बटण ब्लॉक करते, ज्यामुळे <b>विनाकारण होणारे ७०% नुकसान थेट थांबते</b>.
+                </div>
+              </div>
+
+              <div class="guide-item-card" style="border-left: 3px solid #06b6d4;">
+                <div class="guide-card-icon">🎯</div>
+                <div class="guide-card-title">३. ऑटोमॅटिक ट्रेलिंग स्टॉप-लॉस</div>
+                <div class="guide-card-desc">
+                  • <b>+१५% नफा झाल्यावर</b>: स्टॉप-लॉस थेट तुमच्या <b>खरेदी किमतीवर (Cost)</b> येतो — म्हणजे नुकसान होण्याची शक्यता <b>शून्य (Zero Risk)</b> होते!<br>
+                  • <b>+३०% नफा झाल्यावर</b>: स्टॉप-लॉस <b>+१५% नफा आपोआप सुरक्षित लॉक</b> करतो.
+                </div>
+              </div>
+
+              <div class="guide-item-card" style="border-left: 3px solid #a855f7;">
+                <div class="guide-card-icon">📦</div>
+                <div class="guide-card-title">४. अधिकृत NSE लॉट साइझ</div>
+                <div class="guide-card-desc">
+                  • <b>बँक निफ्टी</b>: <b>३० युनिट्स (१ लॉट)</b> (1x=30, 2x=60, 4x=120 बटणे वापरा).<br>
+                  • <b>निफ्टी ५०</b>: <b>६५ युनिट्स (१ लॉट)</b>.<br>
+                  • <b>तातडीने एक्झिट</b>: कोणत्याही क्षणी सर्व ट्रेड्स त्वरित बंद करण्यासाठी वर उजवीकडील <b>🔴 SQUARE OFF ALL</b> बटण दाबा.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 8. Toast Notifications Container ────────────────────────────────── -->
+    <div id="toast-container"></div>
+
+  </div>
+
+  <!-- Terminal Scripts -->
+  <script src="/static/js/chart.js?v=3.2.3"></script>
+  <script src="/static/js/notifications.js?v=3.2.3"></script>
+  <script src="/static/js/positions.js?v=3.2.3"></script>
+  <script src="/static/js/signals.js?v=3.2.3"></script>
+  <script src="/static/js/arb.js?v=3.2.3"></script>
+  <script src="/static/js/app.js?v=3.2.3"></script>
+
+</body>
+</html>

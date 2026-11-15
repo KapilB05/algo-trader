@@ -1,0 +1,65 @@
+# ══════════════════════════════════════════════════════════════════════
+# Default Watchlist — Instruments to subscribe via WebSocket
+# ══════════════════════════════════════════════════════════════════════
+
+# Index instruments (used for trend verification)
+indices:
+  - symbol: "Nifty 50"
+    exchange: "NSE_INDEX"
+    instrument_token: "NSE_INDEX|Nifty 50"
+
+  - symbol: "Nifty Bank"
+    exchange: "NSE_INDEX"
+    instrument_token: "NSE_INDEX|Nifty Bank"
+
+  - symbol: "India VIX"
+    exchange: "NSE_INDEX"
+    instrument_token: "NSE_INDEX|India VIX"
+
+# Equity instruments (high-liquidity F&O stocks)
+equities:
+  - symbol: "RELIANCE"
+    exchange: "NSE_EQ"
+    instrument_token: "NSE_EQ|INE002A01018"
+
+  - symbol: "HDFCBANK"
+    exchange: "NSE_EQ"
+    instrument_token: "NSE_EQ|INE040A01034"
+
+  - symbol: "ICICIBANK"
+    exchange: "NSE_EQ"
+    instrument_token: "NSE_EQ|INE090A01021"
+
+  - symbol: "INFY"
+    exchange: "NSE_EQ"
+    instrument_token: "NSE_EQ|INE009A01021"
+
+  - symbol: "TCS"
+    exchange: "NSE_EQ"
+    instrument_token: "NSE_EQ|INE467B01029"
+
+  - symbol: "SBIN"
+    exchange: "NSE_EQ"
+    instrument_token: "NSE_EQ|INE062A01020"
+
+  - symbol: "BHARTIARTL"
+    exchange: "NSE_EQ"
+    instrument_token: "NSE_EQ|INE397D01024"
+
+  - symbol: "ITC"
+    exchange: "NSE_EQ"
+    instrument_token: "NSE_EQ|INE154A01025"
+
+  - symbol: "KOTAKBANK"
+    exchange: "NSE_EQ"
+    instrument_token: "NSE_EQ|INE237A01028"
+
+  - symbol: "LT"
+    exchange: "NSE_EQ"
+    instrument_token: "NSE_EQ|INE018A01030"
+
+# Options chains are resolved dynamically from instrument master at runtime
+# Add symbols here and the system will auto-subscribe to their weekly options
+options_underlyings:
+  - "NIFTY"
+  - "BANKNIFTY"

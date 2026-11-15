@@ -1,0 +1,36 @@
+timestamp,version,old_sharpe,new_sharpe,improvement_pct,sl_atr,tp_atr,vix_gate,consensus_rule,promoted_by,reason,alpha_annual_pct,info_ratio,excess_return_pct,bench_return_pct,n_sessions,significant
+2026-08-29 09:37:57,2.6477.0-auto-optimized,1.58,3.59,+127.2%,0.75,2.5,11.5,BENCHMARK,AutoLearner,Weekly Walk-Forward Auto-Learner Promotion,,,,,,
+2026-08-29 09:38:43,2.6523.0-auto-optimized,3.59,3.59,+0.0%,0.75,2.5,11.5,BENCHMARK,AutoLearner,Weekly Walk-Forward Auto-Learner Promotion,,,,,,
+2026-08-30 05:32:00,2.7920.0-auto-optimized,2.7,4.32,+60.0%,1.5,1.5,10.0,BENCHMARK,AutoLearner,Weekly Walk-Forward Auto-Learner Promotion,,,,,,
+2026-08-30 05:32:33,2.7953.0-auto-optimized,4.32,4.32,+0.0%,1.5,1.5,10.0,BENCHMARK,AutoLearner,Weekly Walk-Forward Auto-Learner Promotion,,,,,,
+2026-09-04 09:28:56,2.4136.0-auto-optimized,2.15,2.3,+7.0%,1.5,2.5,10.0,BENCHMARK,AutoLearner,Weekly Walk-Forward Auto-Learner Promotion,,,,,,
+2026-09-09 15:30:58,2.7858.0-auto-optimized,3.54,4.45,+25.7%,1.0,2.5,10.0,BENCHMARK,AutoLearner,Weekly Walk-Forward Auto-Learner Promotion,,,,,,
+2026-09-15 05:45:23,2.1123.0-auto-optimized,1.1,1.65,+50.0%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,0,0
+2026-09-15 05:45:23,2.1123.0-auto-optimized,,,,,,,,HumanOperator,Approved and Promoted to Live Production,,,,,,
+2026-09-15 05:49:04,2.1344.0-auto-optimized,1.1,1.65,+50.0%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,0,0
+2026-09-15 05:49:04,2.1344.0-auto-optimized,,,,,,,,HumanOperator,Approved and Promoted to Live Production,,,,,,
+2026-09-15 07:17:11,2.6631.0-auto-optimized,1.1,1.65,+50.0%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,0,0
+2026-09-15 07:17:11,2.6631.0-auto-optimized,,,,,,,,HumanOperator,Approved and Promoted to Live Production,,,,,,
+2026-09-15 08:23:44,2.624.0-auto-optimized,1.1,1.65,+50.0%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,0,0
+2026-09-15 08:23:45,2.624.0-auto-optimized,,,,,,,,HumanOperator,Approved and Promoted to Live Production,,,,,,
+2026-09-15 10:06:14,2.6774.0-auto-optimized,1.1,1.65,+50.0%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,0,0
+2026-09-15 10:06:14,2.6774.0-auto-optimized,,,,,,,,HumanOperator,Approved and Promoted to Live Production,,,,,,
+2026-09-15 10:18:21,2.7501.0-auto-optimized,1.1,1.65,+50.0%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,0,0
+2026-09-15 10:18:21,2.7501.0-auto-optimized,,,,,,,,HumanOperator,Approved and Promoted to Live Production,,,,,,
+2026-09-15 10:34:43,2.8483.0-auto-optimized,1.1,1.65,+50.0%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,0,0
+2026-09-15 10:34:44,2.8483.0-auto-optimized,,,,,,,,HumanOperator,Approved and Promoted to Live Production,,,,,,
+2026-09-16 05:41:07,2.7267.0-auto-optimized,1.1,1.65,+50.0%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,0,0
+2026-09-16 05:41:08,2.7268.0-auto-optimized,1.1,1.8,+63.6%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,25,1
+2026-09-16 05:41:08,2.7268.0-auto-optimized,,,,,,,,HumanOperator,Approved and Promoted to Live Production,,,,,,
+2026-09-16 05:58:52,2.8332.0-auto-optimized,1.1,1.65,+50.0%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,0,0
+2026-09-16 05:58:52,2.8332.0-auto-optimized,1.1,1.8,+63.6%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,25,1
+2026-09-16 05:58:53,2.8332.0-auto-optimized,,,,,,,,HumanOperator,Approved and Promoted to Live Production,,,,,,
+2026-09-16 06:35:41,2.541.0-auto-optimized,1.1,1.65,+50.0%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,0,0
+2026-09-16 06:35:41,2.541.0-auto-optimized,1.1,1.8,+63.6%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,25,1
+2026-09-16 06:35:41,2.541.0-auto-optimized,,,,,,,,HumanOperator,Approved and Promoted to Live Production,,,,,,
+2026-09-18 06:42:48,2.3768.0-auto-optimized,1.1,1.65,+50.0%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,0,0
+2026-09-18 06:42:48,2.3768.0-auto-optimized,1.1,1.8,+63.6%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,25,1
+2026-09-18 06:42:48,2.3768.0-auto-optimized,,,,,,,,HumanOperator,Approved and Promoted to Live Production,,,,,,
+2026-09-29 13:12:11,2.7731.0-auto-optimized,1.1,1.65,+50.0%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,0,0
+2026-09-29 13:12:11,2.7731.0-auto-optimized,1.1,1.8,+63.6%,1.2,2.4,12.0,BENCHMARK,AutoLearner,Weekly Auto-Learner Walk-Forward Optimization (Awaiting Manual Sign-off),0.0,0.0,0.0,0.0,25,1
+2026-09-29 13:12:11,2.7731.0-auto-optimized,,,,,,,,HumanOperator,Approved and Promoted to Live Production,,,,,,

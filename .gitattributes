@@ -1,0 +1,32 @@
+# ── Line ending normalization ──────────────────────────────────────────
+# All text files are stored with LF in the repository.
+* text=auto
+
+# Force LF for source & config files (prevent CRLF churn on Windows)
+*.py   text eol=lf
+*.yaml text eol=lf
+*.yml  text eol=lf
+*.toml text eol=lf
+*.json text eol=lf
+*.md   text eol=lf
+*.sh   text eol=lf
+*.txt  text eol=lf
+*.cfg  text eol=lf
+*.ini  text eol=lf
+*.csv  text eol=lf
+*.example text eol=lf
+.gitignore text eol=lf
+
+# ── Binary files ───────────────────────────────────────────────────────
+*.parquet binary
+*.pkl     binary
+*.pickle  binary
+*.db      binary
+*.sqlite  binary
+*.sqlite3 binary
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.ico     binary
+*.xlsx    binary
+*.pyc     binary

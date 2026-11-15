@@ -1,0 +1,141 @@
+# ══════════════════════════════════════════════════════════════════════
+# Algo-Trader — Master Configuration
+# Hot-reloadable: changes are picked up without restarting the engine.
+# ══════════════════════════════════════════════════════════════════════
+
+# ── Execution ─────────────────────────────────────────────────────────
+execution:
+  # auto | semi | manual
+  mode: semi
+  # Minimum risk-to-reward ratio required before order dispatch
+  min_rr_ratio: 2.0
+
+# ── Confluence (The "Wait" Protocol) ─────────────────────────────────
+confluence:
+  # strict = all 4 checks must pass; override = manual bypass allowed
+  mode: strict
+  volume_surge_multiplier: 1.5
+  volume_lookback_periods: 20
+  # Require index trend alignment (Nifty/BankNifty)
+  require_index_trend: true
+  # ── Session & Entry Quality Gates (Component 9 Data-Derived) ───────
+  # Eliminates 09:15-09:30 opening whip (win rate was 4.1% in attribution report)
+  earliest_entry_time: "09:30"
+  # Eliminates 11:30-13:30 midday chop zone theta decay
+  session_block_start: "11:30"
+  session_block_end: "13:30"
+  # Entry cutoff prior to 15:15 auto square-off
+  latest_entry_time: "14:45"
+  # Minimum ADX to confirm non-choppy directional trend
+  min_adx_for_entry: 25.0
+  # Component 9 rebalanced weights [VWAP, Volume, OI, Index]
+  confluence_weights: [0.35, 0.25, 0.25, 0.15]
+
+# ── Risk Management ──────────────────────────────────────────────────
+risk:
+  # Maximum risk per trade as fraction of total capital (1.0% aligned with engine optimization)
+  max_risk_per_trade: 0.01
+  # Daily drawdown lockout threshold (3.0% aligned with engine circuit breaker)
+  daily_drawdown_limit: 0.03
+  # auto | manual — controls position sizing method
+  allocation_mode: auto
+  # Manual lot size override (used only when allocation_mode=manual)
+  manual_lot_size: 1
+
+# ── VIX Regime Thresholds ────────────────────────────────────────────
+vix:
+  high_threshold: 14.0
+  low_threshold: 12.0
+
+# ── Options Strategy ─────────────────────────────────────────────────
+options:
+  # auto | buy_only | sell_only
+  strategy_selection: auto
+
+# ── Financial Kill Switch ────────────────────────────────────────────
+killswitch:
+  enabled: true
+  # Halt if live Sharpe falls below this fraction of backtest Sharpe
+  sharpe_degradation_pct: 0.50
+  # Halt if live slippage exceeds this multiple of modeled slippage
+  slippage_multiplier: 2.0
+  # Baseline backtest metrics (update after each WFO cycle)
+  backtest_sharpe: 1.5
+  backtest_avg_slippage_bps: 5.0
+
+# ── Heartbeat Monitor ────────────────────────────────────────────────
+heartbeat:
+  interval_seconds: 5
+  max_failures: 3
+
+# ── Trailing Stop ────────────────────────────────────────────────────
+trailing_stop:
+  # atr | fixed
+  mode: atr
+  atr_multiplier: 1.5
+  fixed_points: 10.0
+
+# ── Auto Square-Off ──────────────────────────────────────────────────
+squareoff:
+  enabled: true
+  # 24-hour format IST
+  time: "15:15"
+  # Warn on dashboard N minutes before squareoff
+  warn_minutes_before: 5
+
+# ── Scanner ──────────────────────────────────────────────────────────
+scanner:
+  enabled: true
+  # Dashboard refresh interval in milliseconds
+  refresh_ms: 500
+
+# ── Morning Bias Engine ──────────────────────────────────────────────
+morning_bias:
+  enabled: true
+  # IST time to run pre-market analysis
+  run_time: "09:00"
+
+# ── Telegram Alerts ──────────────────────────────────────────────────
+telegram:
+  enabled: false
+  send_entry_signals: true
+  send_exit_fills: true
+  send_system_health: true
+  send_morning_bias: true
+
+# ── Data Feeds (B-PIPE Redundancy) ───────────────────────────────────
+data_feeds:
+  primary: angelone
+  secondary: yfinance
+  # Enable automatic failover
+  auto_failover: true
+
+# ── Walk-Forward Optimization ────────────────────────────────────────
+wfo:
+  enabled: true
+  # Run weekly on this day (0=Mon, 6=Sun)
+  run_day: 6
+  # Rolling window sizes (weeks)
+  in_sample_weeks: 12
+  out_of_sample_weeks: 4
+
+# ── Audit ────────────────────────────────────────────────────────────
+audit:
+  enabled: true
+  log_dir: "logs/audit"
+  # Retain audit logs for N days
+  retention_days: 90
+
+# ── Database ─────────────────────────────────────────────────────────
+database:
+  path: "data/trading.db"
+
+# ── ML Signal Filter (XGBoost Confidence Scorer) ─────────────────────
+ml_filter:
+  enabled: true
+  # Minimum XGBoost P(Win) confidence required before trade entry.
+  # Trades with confidence < threshold are blocked and logged.
+  # Range: 0.0 (block nothing) to 1.0 (block everything).
+  min_confidence_threshold: 0.65
+  # Path to the serialized XGBoost model. Run `python -m src.ml.train_xgboost` to generate.
+  model_path: "data/xgboost_model.json"

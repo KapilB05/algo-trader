@@ -1,0 +1,92 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[project]
+name = "algo-trader"
+version = "0.1.0"
+description = "Zero-cost, self-healing algorithmic trading system for the Indian stock market"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+readme = "README.md"
+
+dependencies = [
+    # ── Core Async & Network ──────────────────────────────────────────
+    "websockets>=13.0",
+    "httpx>=0.27.0",
+    "orjson>=3.9.0",
+    "protobuf>=4.21.0",
+    "aiosqlite>=0.20.0",
+
+    # ── Data Processing & Analytics ───────────────────────────────────
+    "numpy>=1.26.0",
+    "pandas>=2.2.0",
+    "polars>=0.20.0",
+    "ta>=0.10.0",
+
+    "pyotp>=2.9.0",
+    "smartapi-python>=1.3.0",
+    "yfinance>=0.2.36",
+    "jugaad-data>=0.35.0",
+    "python-dotenv>=1.0.0",
+
+    # ── Order State Machine ───────────────────────────────────────────
+    "python-statemachine>=2.0.0",
+
+    # ── Configuration ─────────────────────────────────────────────────
+    "watchdog>=4.0.0",
+    "PyYAML>=6.0.0",
+    "pydantic>=2.7.0",
+
+    # ── Dashboard & Visualization ─────────────────────────────────────
+    "streamlit>=1.37.0",
+    "plotly>=5.18.0",
+    "streamlit-lightweight-charts-pro>=0.2.0",
+
+    # ── Alerts ────────────────────────────────────────────────────────
+    "python-telegram-bot>=21.0.0",
+
+    # ── Machine Learning ──────────────────────────────────────────────
+    "xgboost>=2.0.0",
+    "scikit-learn>=1.4.0",
+]
+
+[project.optional-dependencies]
+linux = ["uvloop>=0.19.0"]
+windows = ["winloop>=0.1.0"]
+dhan = ["dhanhq>=2.0.0"]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=5.0.0",
+    "backtesting>=0.6.0",
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
+    "shap>=0.45.0",
+]
+
+[project.scripts]
+algo-trader = "src.main:main"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "ANN", "B", "SIM"]
+ignore = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+pythonpath = ["."]
+
+[tool.mypy]
+python_version = "3.11"
+mypy_path = "."
+strict = true
+warn_return_any = true
+warn_unused_configs = true

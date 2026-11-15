@@ -1,0 +1,56 @@
+version: 2.7731.0-auto-optimized
+generated_at: '2026-09-29T13:12:11.176320'
+primary_asset:
+  symbol: BANKNIFTY
+  exchange: NFO
+  instrument_type: OPTIDX
+  lot_size: 30
+  status: ACTIVE
+secondary_asset:
+  symbol: NIFTY
+  status: DISABLED
+  reason: Negative mathematical expectancy in intraday breakout regime
+ensemble_configuration:
+  active_strategies:
+  - ORB
+  - SUPERTREND
+  - FLOW
+  excluded_strategies:
+  - VWAP
+  voting_rule: BENCHMARK
+  consensus_matrix:
+    3_of_3_agree: 1.0
+    2_of_3_agree: 0.5
+    less_than_2: 0.0
+risk_and_execution_parameters:
+  stop_loss_atr_multiplier: 1.2
+  take_profit_atr_multiplier: 2.4
+  risk_reward_ratio: 2.0
+  max_risk_per_trade_pct: 0.01
+  max_daily_loss_pct: 0.03
+  trailing_stop:
+    activation_r_multiple: 1.6
+    trail_lock_r_multiple: 0.8
+regime_and_volatility_filters:
+  chop_cash_gating_enabled: true
+  min_india_vix_entry: 12.0
+  max_india_vix_entry: 24.0
+  adx_trend_threshold: 25.0
+  adx_chop_threshold: 20.0
+  hysteresis_bars: 3
+jane_street_defense:
+  anti_spoofing_2nd_candle_confirmation: true
+  expiry_mandatory_cutoff_time_ist: '14:30'
+  eod_auto_squareoff_time_ist: '15:15'
+  max_oi_trap_trim_pct: 0.005
+backtested_performance:
+  out_of_sample_sharpe: 1.8
+  previous_sharpe: 1.1
+  improvement_pct: 63.6
+  benchmark: NAIVE_LONG
+  alpha_annual_pct: 0.0
+  information_ratio: 0.0
+  excess_return_pct: 0.0
+  benchmark_return_pct: 0.0
+  n_sessions: 25
+  alpha_significant: true
